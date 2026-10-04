@@ -1,0 +1,49 @@
+[project]
+name = "backend"
+version = "0.1.0"
+description = "昇腾 NPU 平台插件"
+readme = "README.md"
+authors = [
+    { name = "娄宗志", email = "2871561809@qq.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "torch-npu>=2.13.0rc1",
+    "vllm-ascend>=0.23.0",
+    "triton-ascend>=3.2.2",
+    "megatron-core @ git+https://github.com/NVIDIA/Megatron-LM.git",
+    "megatron-adaptor @ git+https://gitcode.com/Ascend/MegatronAdaptor.git",
+    "transformer_engine @ git+https://gitcode.com/Ascend/TransformerEngineNPU.git",
+    "mindspeed @ git+https://gitcode.com/Ascend/MindSpeed.git",
+    "mindspeed_ops @ git+https://gitcode.com/Ascend/MindSpeed-Ops.git",
+    "torch>=2.6.0",
+]
+
+[project.scripts]
+backend = "backend:main"
+
+[project.entry-points."verl.plugins"]
+backend = "backend"
+
+[build-system]
+requires = ["uv_build>=0.12.22,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv]
+index-strategy = "unsafe-best-match"
+no-build-isolation-package = ["transformer_engine", "mindspeed_ops"]
+override-dependencies = [
+    "numpy==1.26.4",
+    "torch>=2.13.0rc1",
+    "torch-npu>=2.13.0rc1",
+    "triton-ascend>=3.2.2",
+]
+environments = ["sys_platform == 'linux' and python_full_version < '3.13'"]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+
+[[tool.uv.index]]
+name = "ascend"
+url = "https://mirrors.huaweicloud.com/ascend/repos/pypi"
